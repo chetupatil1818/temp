@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Girlfriend's Day</title>
+<meta name="description" content="A little letter, made just for you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --cream: #FBF3EC;
+  --paper: #FFFDF9;
+  --wine: #4A1628;
+  --wine-deep: #29101B;
+  --rose: #B4536C;
+  --blush: #F3D9DF;
+  --gold: #C9A45A;
+  --gold-soft: #E4CFA0;
+  --ink: #2B1620;
+  --ink-soft: rgba(43,22,32,0.68);
+  --shadow: 0 20px 60px rgba(41,16,27,0.18);
+  --ease: cubic-bezier(.22,.9,.32,1);
+}
+
+*{ box-sizing: border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  font-family:'Inter', system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+::selection{ background: var(--blush); color: var(--wine); }
+
+h1,h2,h3, .display{
+  font-family:'Fraunces', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.italic{ font-style: italic; font-weight: 400; }
+
+button{ font-family: inherit; cursor: pointer; border: none; background: none; }
+a{ color: inherit; }
+
+/* ambient petals on the cover */
+.petals{
+  position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden;
+}
+.petal{
+  position: absolute; top: -5%;
+  font-size: 14px;
+  color: var(--rose);
+  opacity: 0.35;
+  animation: fall linear infinite;
+  will-change: transform;
+}
+@keyframes fall{
+  to{ transform: translateY(110vh) rotate(180deg); }
+}
+
+/* confetti burst on the poster */
+.confetti-piece{
+  position: absolute; top: -8%;
+  width: 9px; height: 14px;
+  opacity: 0.9;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+  will-change: transform;
+}
+@keyframes confetti-fall{
+  0%{ transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+  100%{ transform: translateY(115vh) translateX(var(--drift, 0px)) rotate(540deg); opacity: 0.9; }
+}
+
+/* ---------- screen system ---------- */
+.screen{
+  position: fixed; inset: 0;
+  display: none;
+  overflow-y: auto;
+  z-index: 5;
+}
+.screen.active{ display: block; }
+
+.screen-inner{
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8vh 6vw 6vh;
+}
+
+/* ---------- COVER ---------- */
+#screen-cover{
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(180,83,108,0.25), transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(201,164,90,0.18), transparent 50%),
+    linear-gradient(160deg, var(--wine-deep), var(--wine) 65%);
+  color: var(--cream);
+}
+#screen-cover .screen-inner{ justify-content: center; align-items: center; text-align: center; }
+
+.cover-eyebrow{
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin-bottom: 1.4rem;
+  opacity: 0.9;
+}
+.cover-title{
+  font-size: clamp(2.4rem, 7vw, 4.6rem);
+  line-height: 1.05;
+  margin: 0 0 0.4rem;
+}
+.cover-name{
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  color: var(--gold-soft);
+  margin: 0 0 3rem;
+}
+
+.seal-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.seal{
+  width: 128px; height: 128px;
+  border-radius: 50%;
+  position: relative;
+  background:
+    radial-gradient(circle at 35% 30%, #d9b876, var(--gold) 45%, #9c7834 100%);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.35),
+    inset 0 2px 4px rgba(255,255,255,0.4),
+    inset 0 -6px 10px rgba(0,0,0,0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.5s var(--ease);
+  animation: breathe 3.2s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.035); }
+}
+.seal svg{ width: 52px; height: 52px; opacity: 0.9; }
+.seal:hover{ transform: scale(1.06); }
+.seal:active{ transform: scale(0.95); }
+.seal.cracking{
+  animation: crack 0.55s var(--ease) forwards;
+}
+@keyframes crack{
+  0%{ transform: scale(1); filter: brightness(1); }
+  40%{ transform: scale(1.15); filter: brightness(1.3); }
+  100%{ transform: scale(0.2); opacity: 0; filter: brightness(1.6); }
+}
+.seal-hint{
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: rgba(251,243,236,0.65);
+}
+
+/* ---------- POSTER (celebration reveal) ---------- */
+#screen-poster{
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(180,83,108,0.3), transparent 50%),
+    radial-gradient(ellipse at 85% 85%, rgba(201,164,90,0.22), transparent 55%),
+    linear-gradient(160deg, var(--wine-deep), var(--wine) 70%);
+  color: var(--cream);
+}
+.poster-inner{
+  min-height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6vh 6vw;
+}
+.poster-layout{
+  width: 100%; max-width: 1000px;
+  display: flex; align-items: center; gap: clamp(2rem, 6vw, 5rem);
+}
+.poster-photo-frame{
+  flex: 0 0 auto;
+  width: clamp(220px, 32vw, 340px);
+  aspect-ratio: 4/5;
+  border-radius: 10px;
+  padding: 10px;
+  background: linear-gradient(160deg, var(--gold-soft), var(--gold) 60%, #a9843f);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+  transform: rotate(-2.5deg);
+}
+.poster-photo{
+  width: 100%; height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--blush), #eec9d2 60%, var(--rose));
+  position: relative;
+}
+.poster-photo img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.poster-photo .photo-placeholder{ color: rgba(74,22,40,0.55); }
+
+.poster-text{ flex: 1; min-width: 0; text-align: left; }
+.poster-eyebrow{
+  font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold-soft); margin-bottom: 1rem;
+}
+.poster-title{
+  font-size: clamp(2rem, 5.5vw, 3.4rem);
+  line-height: 1.08;
+  margin: 0 0 0.6rem;
+}
+.poster-title .italic{ color: var(--gold-soft); }
+.poster-sub{
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: rgba(251,243,236,0.88);
+  margin: 0 0 2.2rem;
+  line-height: 1.5;
+}
+.poster-continue{
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 1.7rem;
+  background: var(--gold);
+  color: var(--wine-deep);
+  border-radius: 4px;
+  font-size: 0.95rem; letter-spacing: 0.02em;
+  transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+}
+.poster-continue:hover{ background: var(--gold-soft); transform: translateX(4px); }
+
+@media (max-width: 700px){
+  .poster-layout{ flex-direction: column; text-align: center; }
+  .poster-text{ text-align: center; }
+  .poster-photo-frame{ transform: rotate(0); width: clamp(200px, 60vw, 280px); }
+}
+
+/* ---------- MENU (table of contents) ---------- */
+#screen-menu{ background: var(--cream); }
+.menu-header{
+  text-align: center;
+  margin-bottom: 3.2rem;
+}
+.menu-eyebrow{
+  font-size: 0.76rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--rose); margin-bottom: 0.8rem;
+}
+.menu-title{ font-size: clamp(1.9rem, 5vw, 2.8rem); color: var(--wine); }
+
+.chapters{
+  width: 100%; max-width: 640px;
+  display: flex; flex-direction: column; gap: 1.1rem;
+}
+.chapter-btn{
+  display: flex; align-items: center; gap: 1.4rem;
+  width: 100%;
+  padding: 1.3rem 1.6rem;
+  background: var(--paper);
+  border: 1px solid rgba(74,22,40,0.1);
+  border-radius: 4px;
+  text-align: left;
+  box-shadow: 0 1px 0 rgba(74,22,40,0.05);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+.chapter-btn:hover{
+  transform: translateX(6px);
+  box-shadow: var(--shadow);
+  border-color: var(--gold);
+}
+.chapter-btn:focus-visible{ outline: 2px solid var(--rose); outline-offset: 3px; }
+.chapter-num{
+  font-family:'Fraunces', serif; font-style: italic; font-size: 1rem;
+  color: var(--gold); min-width: 2.2rem;
+}
+.chapter-text{ flex: 1; }
+.chapter-title{ font-size: 1.15rem; color: var(--wine); margin: 0 0 0.15rem; }
+.chapter-sub{ font-size: 0.86rem; color: var(--ink-soft); margin: 0; }
+.chapter-arrow{ color: var(--rose); font-size: 1.2rem; transition: transform 0.3s var(--ease); }
+.chapter-btn:hover .chapter-arrow{ transform: translateX(4px); }
+
+/* ---------- shared inner-screen chrome ---------- */
+.inner-screen{ background: var(--cream); }
+.back-row{
+  width: 100%; max-width: 900px;
+  display: flex; align-items: center; margin-bottom: 2.2rem;
+}
+.back-btn{
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.86rem; letter-spacing: 0.04em;
+  color: var(--rose); padding: 0.5rem 0.2rem;
+}
+.back-btn:hover{ color: var(--wine); }
+.content-title{
+  width: 100%; max-width: 900px;
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+  color: var(--wine); margin: 0 0 0.4rem;
+}
+.content-eyebrow{
+  width: 100%; max-width: 900px;
+  font-size: 0.76rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--rose); margin-bottom: 0.6rem;
+}
+.content-sub{
+  width: 100%; max-width: 900px;
+  color: var(--ink-soft); margin: 0 0 2.6rem; font-size: 1.02rem;
+}
+
+/* ---------- GALLERY ---------- */
+.gallery-grid{
+  width: 100%; max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.1rem;
+}
+.photo-card{
+  position: relative;
+  aspect-ratio: 4/5;
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--blush), #eec9d2 60%, var(--rose));
+  box-shadow: 0 8px 24px rgba(74,22,40,0.12);
+  transition: transform 0.4s var(--ease);
+}
+.photo-card:hover{ transform: translateY(-5px) rotate(-0.3deg); }
+.photo-card img{
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.photo-placeholder{
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.5rem; color: rgba(74,22,40,0.55); text-align: center; padding: 1rem;
+}
+.photo-placeholder svg{ width: 34px; height: 34px; opacity: 0.7; }
+.photo-placeholder span{ font-size: 0.78rem; line-height: 1.4; }
+.photo-caption{
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 0.9rem 1rem 0.7rem;
+  font-size: 0.82rem;
+  color: #fff;
+  background: linear-gradient(to top, rgba(41,16,27,0.75), transparent);
+}
+
+/* ---------- LETTER ---------- */
+.letter-paper{
+  width: 100%; max-width: 680px;
+  background: var(--paper);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  padding: clamp(1.8rem, 5vw, 3.4rem);
+  position: relative;
+}
+.letter-paper::before{
+  content:'';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(var(--gold), var(--rose));
+  border-radius: 6px 0 0 6px;
+}
+.letter-greeting{
+  font-size: 1.3rem; color: var(--wine); margin-bottom: 1.4rem;
+}
+.letter-body p{
+  font-size: 1.05rem; line-height: 1.85; color: var(--ink); margin: 0 0 1.3rem;
+}
+.letter-signoff{
+  margin-top: 2rem;
+  font-family: 'Fraunces', serif; font-style: italic; font-size: 1.15rem;
+  color: var(--wine);
+}
+
+/* ---------- TIMELINE ---------- */
+.timeline{
+  width: 100%; max-width: 700px;
+  position: relative;
+  padding-left: 2.2rem;
+}
+.timeline::before{
+  content:'';
+  position: absolute; left: 0.4rem; top: 0.4rem; bottom: 0.4rem; width: 2px;
+  background: linear-gradient(var(--gold), var(--rose));
+}
+.timeline-item{
+  position: relative;
+  padding-bottom: 2.6rem;
+}
+.timeline-item:last-child{ padding-bottom: 0; }
+.timeline-dot{
+  position: absolute; left: -2.2rem; top: 0.15rem;
+  width: 0.85rem; height: 0.85rem; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 4px var(--cream), 0 0 0 5px rgba(201,164,90,0.4);
+}
+.timeline-date{
+  font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--rose); margin-bottom: 0.3rem;
+}
+.timeline-title{ font-size: 1.2rem; color: var(--wine); margin: 0 0 0.35rem; }
+.timeline-desc{ color: var(--ink-soft); margin: 0; line-height: 1.6; }
+
+/* footer note */
+.made-with{
+  margin-top: 3rem; font-size: 0.76rem; color: var(--ink-soft); opacity: 0.6;
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .seal, .petal, .confetti-piece, .chapter-btn, .photo-card{ animation: none !important; transition: none !important; }
+}
+
+@media (max-width: 560px){
+  .screen-inner{ padding: 6vh 5vw 5vh; }
+  .chapter-btn{ padding: 1.1rem 1.2rem; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="petals" id="petals" aria-hidden="true"></div>
+<div class="confetti-layer" id="confetti-layer" aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; z-index:6; overflow:hidden;"></div>
+
+<!-- ============ COVER ============ -->
+<section class="screen active" id="screen-cover">
+  <div class="screen-inner">
+    <div class="cover-eyebrow">A little something for</div>
+    <h1 class="cover-title">Happy<br><span class="italic">Girlfriend's&nbsp;Day</span></h1>
+    <p class="cover-name display" id="cover-name">for [Her Name]</p>
+    <div class="seal-wrap">
+      <button class="seal" id="seal-btn" aria-label="Open your surprise">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3a2a10" stroke-width="1.4">
+          <path d="M12 21s-8-4.6-8-10.6C4 6.5 6.5 4 9.4 4c1.4 0 2.6.7 3.6 2 1-1.3 2.2-2 3.6-2C19.5 4 22 6.5 22 10.4 22 16.4 12 21 12 21z" transform="translate(-2,-1) scale(0.9)"/>
+        </svg>
+      </button>
+      <span class="seal-hint">tap the seal to open</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POSTER (celebration reveal) ============ -->
+<section class="screen" id="screen-poster">
+  <div class="poster-inner">
+    <div class="poster-layout">
+      <div class="poster-photo-frame">
+        <div class="poster-photo" id="poster-photo"></div>
+      </div>
+      <div class="poster-text">
+        <div class="poster-eyebrow">Happy Girlfriend's Day</div>
+        <h1 class="poster-title">To my<br><span class="italic">beautiful baby,</span><br id="poster-name-break"><span id="poster-name">[Her Name]</span></h1>
+        <p class="poster-sub" id="poster-sub">Every day with you feels like something worth celebrating. Today, especially.</p>
+        <button class="poster-continue" id="poster-continue">Read your letter &rarr;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="screen" id="screen-menu">
+  <div class="screen-inner">
+    <div class="menu-header">
+      <div class="menu-eyebrow">Table of Contents</div>
+      <h2 class="menu-title">A letter, in three parts</h2>
+    </div>
+    <div class="chapters" id="chapters"></div>
+    <p class="made-with">made with love, just for you</p>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="screen inner-screen" id="screen-gallery">
+  <div class="screen-inner">
+    <div class="back-row"><button class="back-btn" data-back>&larr; back to contents</button></div>
+    <div class="content-eyebrow">Chapter I</div>
+    <h2 class="content-title">Our Gallery</h2>
+    <p class="content-sub">A few of my favourite moments with you.</p>
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+</section>
+
+<!-- ============ LETTER ============ -->
+<section class="screen inner-screen" id="screen-letter">
+  <div class="screen-inner">
+    <div class="back-row"><button class="back-btn" data-back>&larr; back to contents</button></div>
+    <div class="content-eyebrow">Chapter II</div>
+    <h2 class="content-title">A Letter For You</h2>
+    <p class="content-sub">Everything I mean, written down so it lasts longer than a moment.</p>
+    <div class="letter-paper">
+      <div class="letter-greeting display italic" id="letter-greeting">My beautiful baby,</div>
+      <div class="letter-body" id="letter-body"></div>
+      <div class="letter-signoff" id="letter-signoff">— always yours, Chetan</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="screen inner-screen" id="screen-timeline">
+  <div class="screen-inner">
+    <div class="back-row"><button class="back-btn" data-back>&larr; back to contents</button></div>
+    <div class="content-eyebrow">Chapter III</div>
+    <h2 class="content-title">Our Timeline</h2>
+    <p class="content-sub">The story so far.</p>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   EDIT ME — this is the only section you should need to touch.
+   ========================================================= */
+const CONFIG = {
+  herName: "Pranjal",
+  yourName: "Chetan",
+
+  // The big photo shown on the celebration poster right after the seal opens.
+  // Put the file in the photos/ folder and reference it as "photos/hero.jpg".
+  heroPhoto: { src: "C:\\Users\\Chetan Patil\\Downloads\\photos\\hero.jpg", caption: "" },
+
+  // Gallery photos. Put files in the photos/ folder next to this file and
+  // reference them as "photos/1.jpg", "photos/2.jpg", etc. Leave src empty
+  // to keep a placeholder card.
+  photos: [
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\drive-download-20260726T081447Z-1-001\\IMG-20260712-WA0060.jpg", caption: "" },
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\drive-download-20260726T081447Z-1-001\\IMG-20260711-WA0006.jpg", caption: "" },
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\drive-download-20260726T081447Z-1-001\\IMG-20260712-WA0015.jpg", caption: "Your favourite silly face" },
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\IMG20250307122133.jpg", caption: "Just an ordinary, perfect day" },
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\drive-download-20260726T081447Z-1-001\\IMG-20260722-WA0002.jpg", caption: "" },
+    { src: "C:\\Users\\Chetan Patil\\Downloads\\Gemini_Generated_Image_bpcypabpcypabpcy.png", caption: "One more, because I couldn't choose" },
+  ],
+
+  letter: [
+    "I know a message like this usually fits in one line on a card, but you deserve more than one line — so here's everything, written out properly.",
+    "It still makes me smile that of all the ways two people could meet, ours started with a random \u201chi\u201d on LinkedIn. I wasn't looking for anything that day. I definitely wasn't expecting a work app to quietly turn into the best decision of my life, but here we are.",
+    "I still remember our first date like it happened an hour ago. We went to the movies — though honestly, I couldn't tell you a single thing that happened on screen. All I remember is finally sitting next to you, working up the courage to hold your hand, and how every nerve I'd walked in with just disappeared the moment you held it back.",
+    "That evening wasn't just a date. It was the moment something in me shifted for good — I walked in nervous and walked out sure of exactly how I felt about you, more sure than I expected to be that early.",
+    "These days there are miles between us — more than either of us would choose if we had the option. But if anything, the distance has only made things clearer. It hasn't made this smaller. If anything, it's made me realize how much I mean it when I say I choose you, even when you're not in the room, even on the days it's hard.",
+    "So happy Girlfriend's Day, my beautiful baby. Thank you for that random hello, for that first movie neither of us watched, and for every ordinary day since that somehow still feels like the good kind of lucky. Here's to many, many more chapters with you."
+  ],
+
+  timeline: [
+    { date: "Day One", title: "How we met", desc: "It started where you'd least expect it — a random \u201chi\u201d on LinkedIn, of all places." },
+    { date: "The Early Days", title: "Our first date", desc: "We met at the movies. Sitting next to you with your hand in mine washed away every nerve I'd walked in with — the film was really just an excuse for the time we ended up spending together." },
+    { date: "A Turning Point", title: "A moment that mattered", desc: "That evening at the theatre turned out to be more than just a date — it was the turning point where my feelings for you grew deeper than I'd expected them to, this early on." },
+    { date: "Today", title: "Right now", desc: "Today we're miles apart, but happier than ever. Long distance isn't always easy, but what started with that random hello has only grown stronger since." },
+  ],
+};
+
+/* ============ render ============ */
+document.getElementById('cover-name').textContent = `for ${CONFIG.herName}`;
+document.getElementById('poster-name').textContent = CONFIG.herName;
+document.getElementById('letter-greeting').textContent = `My beautiful baby,`;
+document.getElementById('letter-signoff').textContent = `— always yours, ${CONFIG.yourName}`;
+
+function photoMarkup(src, caption, placeholderHint){
+  if (src) {
+    return `<img src="${src}" alt="${caption || CONFIG.herName}" loading="lazy">` +
+      (caption ? `<div class="photo-caption">${caption}</div>` : '');
+  }
+  return `
+    <div class="photo-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <circle cx="8.5" cy="10" r="1.5"/>
+        <path d="M21 16l-5-5-4 4-3-3-5 5"/>
+      </svg>
+      <span>${placeholderHint || 'Add photo → photos/ folder'}</span>
+    </div>` + (caption ? `<div class="photo-caption">${caption}</div>` : '');
+}
+
+// poster hero photo
+document.getElementById('poster-photo').innerHTML = photoMarkup(CONFIG.heroPhoto.src, CONFIG.heroPhoto.caption, 'Add her photo → photos/hero.jpg');
+
+// chapters (3 now — quiz removed)
+const chapters = [
+  { id: 'gallery', num: 'I', title: 'Our Gallery', sub: 'A few of my favourite moments with you' },
+  { id: 'letter', num: 'II', title: 'A Letter For You', sub: 'Everything I mean, written down' },
+  { id: 'timeline', num: 'III', title: 'Our Timeline', sub: 'The story so far' },
+];
+const chaptersEl = document.getElementById('chapters');
+chapters.forEach(c => {
+  const btn = document.createElement('button');
+  btn.className = 'chapter-btn';
+  btn.innerHTML = `
+    <span class="chapter-num">${c.num}</span>
+    <span class="chapter-text">
+      <p class="chapter-title display">${c.title}</p>
+      <p class="chapter-sub">${c.sub}</p>
+    </span>
+    <span class="chapter-arrow">&rarr;</span>`;
+  btn.addEventListener('click', () => showScreen('screen-' + c.id));
+  chaptersEl.appendChild(btn);
+});
+
+// gallery
+const galleryGrid = document.getElementById('gallery-grid');
+CONFIG.photos.forEach((p) => {
+  const card = document.createElement('div');
+  card.className = 'photo-card';
+  card.innerHTML = photoMarkup(p.src, p.caption);
+  galleryGrid.appendChild(card);
+});
+
+// letter
+const letterBody = document.getElementById('letter-body');
+CONFIG.letter.forEach(line => {
+  const p = document.createElement('p');
+  p.textContent = line;
+  letterBody.appendChild(p);
+});
+
+// timeline
+const timelineEl = document.getElementById('timeline');
+CONFIG.timeline.forEach(item => {
+  const div = document.createElement('div');
+  div.className = 'timeline-item';
+  div.innerHTML = `
+    <span class="timeline-dot"></span>
+    <div class="timeline-date">${item.date}</div>
+    <h3 class="timeline-title display">${item.title}</h3>
+    <p class="timeline-desc">${item.desc}</p>`;
+  timelineEl.appendChild(div);
+});
+
+/* ============ navigation ============ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTo(0,0);
+}
+document.querySelectorAll('[data-back]').forEach(btn => {
+  btn.addEventListener('click', () => showScreen('screen-menu'));
+});
+document.getElementById('seal-btn').addEventListener('click', function(){
+  this.classList.add('cracking');
+  setTimeout(() => {
+    showScreen('screen-poster');
+    fireConfetti();
+  }, 420);
+});
+document.getElementById('poster-continue').addEventListener('click', () => showScreen('screen-menu'));
+
+/* ============ ambient petals (cover) ============ */
+const petalsEl = document.getElementById('petals');
+const symbols = ['\u2740','\u2726','\u2665'];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduceMotion){
+  for (let i = 0; i < 14; i++){
+    const el = document.createElement('span');
+    el.className = 'petal';
+    el.textContent = symbols[i % symbols.length];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (10 + Math.random() * 10) + 'px';
+    el.style.animationDuration = (10 + Math.random() * 12) + 's';
+    el.style.animationDelay = (Math.random() * 12) + 's';
+    petalsEl.appendChild(el);
+  }
+}
+
+/* ============ confetti burst (poster reveal) ============ */
+function fireConfetti(){
+  if (reduceMotion) return;
+  const layer = document.getElementById('confetti-layer');
+  const colors = ['#C9A45A', '#E4CFA0', '#B4536C', '#F3D9DF', '#FBF3EC'];
+  for (let i = 0; i < 60; i++){
+    const el = document.createElement('span');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[i % colors.length];
+    el.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+    el.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+    el.style.animationDelay = (Math.random() * 0.6) + 's';
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), 4200);
+  }
+}
+</script>
+</body>
+</html>
